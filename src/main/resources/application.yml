@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: IMAGE-PROCESSOR-SERVICE
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+  datasource:
+    url: "jdbc:mysql://103.235.104.247:3306/NP_PROD?autoReconnect=true&useSSL=false"
+    driver-class-name: com.mysql.jdbc.Driver
+    username: npadmin
+    password: ShadowWalker@4813
+    tomcat:
+      max-active: 30
+      max-idle: 15
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  jmx:
+    default-domain: ${spring.application.name}
+image:
+  store:
+    path:
+      root: /usr/local/Upload/
+service:
+  self:
+    host: 103.235.104.247
+server:
+  port: 9901
+ribbon:
+  eureka:
+   enabled: false
