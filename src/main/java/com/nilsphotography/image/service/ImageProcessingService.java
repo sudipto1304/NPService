@@ -9,8 +9,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -25,6 +28,8 @@ import com.nilsphotography.image.entity.CategoryEntity;
 import com.nilsphotography.image.entity.ImageInfoEntity;
 import com.nilsphotography.image.repository.ImageCategoryRepository;
 import com.nilsphotography.image.repository.ImageDataRepository;
+import com.nilsphotography.image.response.Category;
+import com.nilsphotography.image.response.ImageContent;
 import com.nilsphotography.image.response.ImageUploadResponse;
 
 
@@ -82,5 +87,29 @@ public class ImageProcessingService
         final InputStream in = new FileInputStream(new File(entity.getImagePath()));
         final byte[] media = IOUtils.toByteArray(in);
         return media;
+    }
+    
+    public List<Category> getImageContents(){
+    	List<ImageInfoEntity> images = imageDataRepository.findAll();
+    	Map<String, Category> response = new HashMap<String, Category>();
+    	images.forEach(e->{
+    		ImageContent image = new ImageContent();
+    		image.setHeight(e.getHeight());
+    		image.setWidth(e.getWidth());
+    		image.setSize(e.getImageSize());
+    		image.setUrl(e.getUrl());
+    		if(response.containsKey(e.getCategory())) {
+    			response.get(e.getCategory()).getImages().add(image);
+    		}else {
+    			List<ImageContent> contents  = new ArrayList<ImageContent>();
+    			contents.add(image);
+    			Category cat = new Category();
+    			cat.setCategory(e.getCategory());
+    			cat.setImages(contents);
+    			response.put(e.getCategory(), cat);
+    		}
+    	});
+    	
+    	return response.entrySet().stream().map(e->e.getValue()).collect(Collectors.toList());
     }
 }

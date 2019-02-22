@@ -30,6 +30,8 @@ service:
     host: 103.235.104.247
 server:
   port: 9901
+  servlet:
+    context-path: /GlobalImage
 ribbon:
   eureka:
    enabled: false
